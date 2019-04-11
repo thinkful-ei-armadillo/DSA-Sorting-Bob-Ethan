@@ -11,7 +11,8 @@
 // middle 43
 // left 16, 49, 39, 27
 // right3, 34, 46, 40
-
+const { LinkedList } = require('./linkedlist');
+const util = require('util');
 function mergeSort(array) {
   if (array.length <= 1) {
     return array;
@@ -157,4 +158,61 @@ let quickArray3 = [89, 30, 25, 32, 72, 70, 51, 42, 25, 24, 53, 55, 78, 50, 13,
                    43, 9, 73, 80, 98, 46, 27, 22, 87, 49, 83, 6, 39, 42, 51, 54,
                    84, 34, 53, 78, 40, 14, 5];
 
-console.log(quickSortEndPivot(quickArray3));
+// console.log(quickSortEndPivot(quickArray3));
+
+function mergeSortLinkedList(list) {
+
+  const length = list.getLength();
+  if (length <= 1) {
+    return list;
+  }
+
+  const middle = Math.floor(length / 2);
+  let left = list.slice(0, middle);
+  let right = list.slice(middle, length);
+
+  left = mergeSortLinkedList(left);
+  right = mergeSortLinkedList(right);
+  return mergeLinkedList(left, right, list);
+}
+function mergeLinkedList(left, right, list) {
+
+  //loop from left and right as long as left and right have untouched elements
+  let currentRightNode = right.head;
+  let currentLeftNode = left.head;
+
+  while(currentLeftNode !== null && currentRightNode !== null) {
+    if (currentLeftNode.value < currentRightNode.value) {
+      list.insertLast(currentLeftNode.value);
+    }
+    else {
+      list.insertLast(currentRightNode.value);
+    }
+    currentLeftNode = currentLeftNode.next;
+    currentRightNode = currentRightNode.next;
+  }
+  //add all remaining items from left
+  while (currentLeftNode !== null) {
+    list.insertLast(currentLeftNode.value);
+    currentLeftNode = currentLeftNode.next;
+  }
+  //add all remaining items from right
+  while (currentRightNode !== null) {
+    list.insertLast(currentRightNode.value);
+    currentRightNode = currentRightNode.next;
+  }
+
+  return list;
+}
+
+let list = new LinkedList();
+list.insertFirst(5);
+list.insertFirst(7);
+list.insertFirst(2);
+list.insertFirst(8);
+list.insertFirst(12);
+list.insertFirst(49);
+list.insertFirst(23);
+list.insertFirst(32);
+console.log(util.inspect(mergeSortLinkedList(list), true, null));
+console.log(util.inspect(list, true, null));
